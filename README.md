@@ -1,5 +1,14 @@
 # template
-A minimal polyfill for `<template>`.
+A minimal polyfill for <template>.
+
+# Notice
+
+This repository contains a fork maintained by Manuel Baclet of [https://github.com/webcomponents/template](webcomponents/template).
+
+# Installation
+`npm install template-mb`
+Version 1.x supports IE>=9 and version 2.x supports IE>=11.
+
 ## License
 
 Everything in this repository is BSD style license unless otherwise specified.
