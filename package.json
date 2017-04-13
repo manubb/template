@@ -1,19 +1,19 @@
 {
-  "name": "template",
-  "version": "0.0.1",
-  "description": "Minimal template polyfills needed by webcomponents.js",
+  "name": "template-mb",
+  "version": "1.0.0",
+  "description": "Minimal template polyfills (forked from webcomponents/template)",
   "main": "template.js",
   "directories": {
     "test": "tests"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/webcomponents/template.git"
+    "url": "https://github.com/manubb/template.git"
   },
   "author": "The Polymer Authors",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/webcomponents/template/issues"
+    "url": "https://github.com/manubb/template/issues"
   },
   "scripts": {
     "test": "wct"
