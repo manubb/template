@@ -228,7 +228,7 @@
           dom = this.ownerDocument.importNode(this, true);
         }
       } else {
-        dom = Native_cloneNode.call(this, deep);
+        dom = nativeCloneNode.call(this, deep);
       }
       // template.content is cloned iff `deep`.
       if (deep) {
