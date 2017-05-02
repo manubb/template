@@ -1,6 +1,6 @@
 {
   "name": "template-mb",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Minimal template polyfills (forked from webcomponents/template)",
   "main": "template.js",
   "directories": {
