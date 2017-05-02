@@ -105,13 +105,19 @@
               return o.join('');
             },
             set: function(text) {
-              contentDoc.body.innerHTML = text;
+              var wrap = findWrap(text);
+              var body = contentDoc.body;
+              body.innerHTML = [wrap[1], text, wrap[2]].join('');
               TemplateImpl.bootstrap(contentDoc);
               while (this.content.firstChild) {
                 this.content.removeChild(this.content.firstChild);
               }
-              while (contentDoc.body.firstChild) {
-                this.content.appendChild(contentDoc.body.firstChild);
+              var j = wrap[0];
+              while (j--) {
+                body = body.lastChild;
+              }
+              while (body.firstChild) {
+                this.content.appendChild(body.firstChild);
               }
             },
             configurable: true
@@ -124,6 +130,33 @@
       // bootstrap recursively
       TemplateImpl.bootstrap(template.content);
     };
+
+    var wrapMap = {
+      // Support: IE <=9 only
+      option: [ 1, "<select multiple='multiple'>", "</select>" ],
+      // XHTML parsers do not magically insert elements in the
+      // same way that tag soup parsers do. So we cannot shorten
+      // this by omitting <tbody> or other required elements.
+      thead: [ 1, "<table>", "</table>" ],
+      col: [ 2, "<table><colgroup>", "</colgroup></table>" ],
+      tr: [ 2, "<table><tbody>", "</tbody></table>" ],
+      td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
+      _default: [ 0, "", "" ]
+    };
+
+    // Support: IE <=9 only
+    wrapMap.optgroup = wrapMap.option;
+
+    wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+    wrapMap.th = wrapMap.td;
+
+    var rTagName = /<([a-z][^\/\0>\x20\t\r\n\f]+)/i;
+
+    function findWrap(text) {
+      // https://github.com/jquery/jquery/blob/a6b07052/src/manipulation/var/rtagName.js
+      var tag = (rTagName.exec(text) || [ "", "" ])[1].toLowerCase();
+      return wrapMap[tag] || wrapMap._default;
+    }
 
     /**
       The `bootstrap` method is called automatically and "fixes" all
