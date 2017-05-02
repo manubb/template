@@ -122,13 +122,17 @@
     };
 
     function defineInnerHTML(obj) {
+      var wrapper = contentDoc.createElement('div');
       Object.defineProperty(obj, 'innerHTML', {
         get: function() {
           var o = [];
           for (var e = this.content.firstChild; e; e = e.nextSibling) {
             if (e.nodeType === Node.ELEMENT_NODE) o.push(e.outerHTML);
-            else if (e.nodeType === Node.COMMENT_NODE) o.push('<!--' + e.data + '-->');
-            else o.push(escapeData(e.data));
+            else {
+              wrapper.appendChild(e.cloneNode(true));
+              o.push(wrapper.innerHTML);
+              wrapper.textContent = '';
+            }
           }
           return o.join('');
         },
@@ -173,25 +177,6 @@
       }
       return el;
     };
-
-    var escapeDataRegExp = /[&\u00A0<>]/g;
-
-    function escapeReplace(c) {
-      switch (c) {
-        case '&':
-          return '&amp;';
-        case '<':
-          return '&lt;';
-        case '>':
-          return '&gt;';
-        case '\u00A0':
-          return '&nbsp;';
-      }
-    }
-
-    function escapeData(s) {
-      return s.replace(escapeDataRegExp, escapeReplace);
-    }
   }
 
   // make cloning/importing work!
