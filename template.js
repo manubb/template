@@ -75,7 +75,6 @@
   if (needsTemplate) {
 
     var contentDoc = document.implementation.createHTMLDocument('template');
-    var canDecorate = true;
 
     var templateStyle = document.createElement('style');
     templateStyle.textContent = TEMPLATE_TAG + '{display:none;}';
@@ -117,15 +116,7 @@
         template.cloneNode = function(deep) {
           return PolyfilledHTMLTemplateElement._cloneNode(this, deep);
         };
-        // add innerHTML to template, if possible
-        // Note: this throws on Safari 7
-        if (canDecorate) {
-          try {
-            defineInnerHTML(template);
-          } catch (err) {
-            canDecorate = false;
-          }
-        }
+        defineInnerHTML(template);
       }
       // bootstrap recursively
       PolyfilledHTMLTemplateElement.bootstrap(template.content);
