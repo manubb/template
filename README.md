@@ -10,8 +10,6 @@ This repository contains a fork maintained by Manuel Baclet of [webcomponents/te
 
 # Browser support
 
-## Table
-
 |                |Chrome       |Firefox        |IE/Edge    |Opera         | Safari    |
 |----------------|-------------|---------------|-----------|--------------|-----------|
 |Flawless native |&ge;35       |&ge;22         |-          |&ge;22        |&ge;9      |
@@ -23,16 +21,16 @@ On line "Buggy native", c denotes problems when cloning templates or nodes that 
 
 On "Polyfill **" line, `<template>` will have correct prototype `HTMLTemplateElement` (unlike browsers on "Polyfill *" line).
 
-## Polyfill caveats
+# Polyfill caveats
 
-### Subdocument templates
+## Subdocument templates
 
 Templates included in subdocuments (such as HTMLImports) need to be bootstrapped before being usable by calling:
 ```js
 if (window.HTMLTemplateElement.bootstrap) window.HTMLTemplateElement.bootstrap(otherDoc);
 ```
 
-### Inherent limitation
+## Inherent limitation
 
 Polyfilled templates are not as inert as native templates. For examples, scripts will be executed and images will be loaded.
 
