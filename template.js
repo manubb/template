@@ -59,6 +59,16 @@
     }
   })();
 
+  // returns true if templates cannot be deep imported
+  var needsImport = (function() {
+    if (!needsTemplate) {
+      var t = document.createElement('template');
+      t.content.appendChild(document.createElement('div'));
+      var deepImport = document.importNode(t, true);
+      return (deepImport.content.childNodes.length === 0);
+    }
+  })();
+
   var TEMPLATE_TAG = 'template';
   var PolyfilledHTMLTemplateElement = function() {};
 
@@ -213,7 +223,7 @@
   }
 
   // make cloning/importing work!
-  if (needsTemplate || needsCloning) {
+  if (needsTemplate || needsCloning || needsImport) {
 
     PolyfilledHTMLTemplateElement._cloneNode = function(template, deep) {
       var clone = Native_cloneNode.call(template, false);
@@ -256,44 +266,48 @@
       }
     };
 
-    // override all cloning to fix the cloned subtree to contain properly
-    // cloned templates.
-    Node.prototype.cloneNode = function(deep) {
-      var dom;
-      // workaround for Edge bug cloning documentFragments
-      // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8619646/
-      if (this instanceof DocumentFragment) {
-        if (!deep) {
-          return this.ownerDocument.createDocumentFragment();
+    if (needsTemplate || needsCloning) {
+      // override all cloning to fix the cloned subtree to contain properly
+      // cloned templates.
+      Node.prototype.cloneNode = function(deep) {
+        var dom;
+        // workaround for Edge bug cloning documentFragments
+        // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8619646/
+        if (this instanceof DocumentFragment) {
+          if (!deep) {
+            return this.ownerDocument.createDocumentFragment();
+          } else {
+            dom = this.ownerDocument.importNode(this, true);
+          }
         } else {
-          dom = this.ownerDocument.importNode(this, true);
+          dom = Native_cloneNode.call(this, deep);
         }
-      } else {
-        dom = Native_cloneNode.call(this, deep);
-      }
-      // template.content is cloned iff `deep`.
-      if (deep) {
-        PolyfilledHTMLTemplateElement.fixClonedDom(dom, this);
-      }
-      return dom;
-    };
-
-    // NOTE: we are cloning instead of importing <template>'s.
-    // However, the ownerDocument of the cloned template will be correct!
-    // This is because the native import node creates the right document owned
-    // subtree and `fixClonedDom` inserts cloned templates into this subtree,
-    // thus updating the owner doc.
-    Document.prototype.importNode = function(element, deep) {
-      if (element.localName === TEMPLATE_TAG) {
-        return PolyfilledHTMLTemplateElement._cloneNode(element, deep);
-      } else {
-        var dom = Native_importNode.call(this, element, deep);
+        // template.content is cloned iff `deep`.
         if (deep) {
-          PolyfilledHTMLTemplateElement.fixClonedDom(dom, element);
+          PolyfilledHTMLTemplateElement.fixClonedDom(dom, this);
         }
         return dom;
-      }
-    };
+      };
+    }
+
+    if (needsTemplate || needsImport) {
+      // NOTE: we are cloning instead of importing <template>'s.
+      // However, the ownerDocument of the cloned template will be correct!
+      // This is because the native import node creates the right document owned
+      // subtree and `fixClonedDom` inserts cloned templates into this subtree,
+      // thus updating the owner doc.
+      Document.prototype.importNode = function(element, deep) {
+        if (element.localName === TEMPLATE_TAG) {
+          return PolyfilledHTMLTemplateElement._cloneNode(element, deep);
+        } else {
+          var dom = Native_importNode.call(this, element, deep);
+          if (deep) {
+            PolyfilledHTMLTemplateElement.fixClonedDom(dom, element);
+          }
+          return dom;
+        }
+      };
+    }
 
     if (needsCloning) {
       window.HTMLTemplateElement.prototype.cloneNode = function(deep) {
