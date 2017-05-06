@@ -17,7 +17,7 @@ This repository contains a fork maintained by Manuel Baclet of [webcomponents/te
 |Polyfill **     |-            |-              |11         |-             |-          |
 |Polyfill *      |15-25        |-              |9-10       |11.6-12.16    |-          |
 
-On line "Buggy native", c denotes problems when cloning templates or nodes that contain templates; i denoted problems when importing templates or nodes that contain templates. The polyfill fixes those problems.
+On line "Buggy native", c denotes problems when cloning templates or nodes that contain templates; i denotes problems when importing templates or nodes that contain templates. The polyfill fixes those problems.
 
 On "Polyfill **" line, `<template>` will have correct prototype `HTMLTemplateElement` (unlike browsers on "Polyfill *" line).
 
