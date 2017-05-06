@@ -122,17 +122,17 @@
       PolyfilledHTMLTemplateElement.bootstrap(template.content);
     };
 
+    var draft = contentDoc.createElement('div');
     function defineInnerHTML(obj) {
-      var wrapper = contentDoc.createElement('div');
       Object.defineProperty(obj, 'innerHTML', {
         get: function() {
           var o = [];
           for (var e = this.content.firstChild; e; e = e.nextSibling) {
             if (e.nodeType === Node.ELEMENT_NODE) o.push(e.outerHTML);
             else {
-              wrapper.appendChild(e.cloneNode(true));
-              o.push(wrapper.innerHTML);
-              wrapper.textContent = '';
+              draft.appendChild(e.cloneNode(true));
+              o.push(draft.innerHTML);
+              draft.textContent = '';
             }
           }
           return o.join('');
