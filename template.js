@@ -157,6 +157,7 @@
       });
     }
 
+    // https://github.com/jquery/jquery/blob/a6b07052/src/manipulation
     var wrapMap = {
       // Support: IE <=9 only
       option: [ 1, "<select multiple='multiple'>", "</select>" ],
@@ -179,11 +180,10 @@
     var rTagName = /<([a-z][^\/\0>\x20\t\r\n\f]+)/i;
 
     function findWrap(text) {
-      // https://github.com/jquery/jquery/blob/a6b07052/src/manipulation/var/rtagName.js
       var tag = (rTagName.exec(text) || [ "", "" ])[1].toLowerCase();
       return wrapMap[tag] || wrapMap._default;
     }
-
+    // end of jquery extract
     defineInnerHTML(PolyfilledHTMLTemplateElement.prototype);
 
     /**
