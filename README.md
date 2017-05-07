@@ -30,7 +30,7 @@ Templates included in subdocuments (such as HTMLImports) need to be bootstrapped
 if (window.HTMLTemplateElement.bootstrap) window.HTMLTemplateElement.bootstrap(otherDoc);
 ```
 
-## Inherent limitation
+## Inherent limitations
 
 Polyfilled templates are not as inert as native templates. For examples, scripts will be executed and images will be loaded.
 
