@@ -123,19 +123,33 @@
     };
 
     var draft = contentDoc.createElement('div');
+    var rTagSplit = /^(.*)(<\/[a-z][^\/]*>)$/i;
+    function getInnerHTML(node) {
+      var o = [];
+      for (var e = node.firstChild; e; e = e.nextSibling) {
+        if (e.nodeType === Node.ELEMENT_NODE) {
+          if (e.localName === TEMPLATE_TAG || e.childNodes.length) {
+            var split = rTagSplit.exec(e.cloneNode(false).outerHTML) || ["", "", ""];
+            o.push(
+              split[1],
+              getInnerHTML(e.localName === TEMPLATE_TAG ? e.content : e),
+              split[2]
+            );
+          } else {
+            o.push(e.outerHTML);
+          }
+        } else {
+          draft.appendChild(e.cloneNode(false));
+          o.push(draft.innerHTML);
+          draft.textContent = '';
+        }
+      }
+      return o.join('');
+    }
     function defineInnerHTML(obj) {
       Object.defineProperty(obj, 'innerHTML', {
         get: function() {
-          var o = [];
-          for (var e = this.content.firstChild; e; e = e.nextSibling) {
-            if (e.nodeType === Node.ELEMENT_NODE) o.push(e.outerHTML);
-            else {
-              draft.appendChild(e.cloneNode(true));
-              o.push(draft.innerHTML);
-              draft.textContent = '';
-            }
-          }
-          return o.join('');
+          return getInnerHTML(this.content);
         },
         set: function(text) {
           var wrap = findWrap(text);
