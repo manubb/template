@@ -146,6 +146,8 @@
       }
       return o.join('');
     }
+    PolyfilledHTMLTemplateElement.getInnerHTML = getInnerHTML;
+
     function defineInnerHTML(obj) {
       Object.defineProperty(obj, 'innerHTML', {
         get: function() {
